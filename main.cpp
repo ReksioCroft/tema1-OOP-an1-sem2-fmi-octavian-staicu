@@ -21,6 +21,7 @@ public:
 
   ~Graf_ponderat();    ///destructor
 
+  void afisare();
 };
 
 Graf_ponderat::Graf_ponderat() {///constructor initializare
@@ -46,8 +47,15 @@ Graf_ponderat::~Graf_ponderat() {///destructor
   for( int i = 0; i < 100; i++ )
     v[i].clear();
 }
-int main()
-{
-    cout << "Hello world!" << endl;
-    return 0;
+
+void Graf_ponderat::afisare() {
+  int i, j;
+  for ( i = 0; i < 100; i++ )
+    for ( j = 0; j < v[i].size(); j++ )
+      if ( i < v[i][j].first ) ///fiind graf neorientat, voi afisa o singura data muchiile
+        cout<<"Exista drum de la nodul " << i << " la nodul " << v[i][j].first <<" cu ponderea" << v[i][j].second << "\n";
+}
+
+int main() {
+  return 0;
 }
