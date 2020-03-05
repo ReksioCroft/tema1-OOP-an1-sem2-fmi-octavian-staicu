@@ -28,6 +28,8 @@ public:
   friend ostream &operator <<( ostream& afisare, Graf_ponderat &g );
 
   void bfs_bellman_ford(int nod1, int nod2);
+
+  void pondere_roy_floyd();
 };
 
 Graf_ponderat::Graf_ponderat() {///constructor initializare
@@ -96,6 +98,31 @@ void Graf_ponderat::printare_bfs( int drum[], int nod1, int nod2 ) {
     printare_bfs( drum, nod1, drum[nod2] );
   cout << nod2 << " ";
 }
+
+void Graf_ponderat::pondere_roy_floyd() {
+  int i, maxi, j, k;
+  maxi = 0;
+  for ( i = 0; i < 100; i++ )
+    if ( v[i].size() > 0 )
+      maxi = i;
+  int matrix[maxi+1][maxi+1];
+  for ( i = 0; i <= maxi; i++ )
+    for ( j = 0; j <= maxi; j++ ) {
+      if ( i == j )
+        matrix[i][j] = 0;
+      else
+        matrix[i][j] = INF;
+    }
+  for ( i = 0; i <= maxi; i++ ) {
+    for ( j = 0; j <= v[i].size(); j++ ) {
+      matrix[i][v[i][j].first] = v[i][j].second;
+    }
+  }
+
+  ///TODO
+
+}
+
 
 int main() {
   Graf_ponderat g;
