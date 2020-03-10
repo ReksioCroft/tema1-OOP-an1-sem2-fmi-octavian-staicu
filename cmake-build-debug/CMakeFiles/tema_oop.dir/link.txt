@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/tema_oop.dir/main.cpp.o  -o tema_oop 
