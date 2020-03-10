@@ -136,7 +136,7 @@ void Graf_ponderat::pondere_roy_floyd() {
 
 int main() {
     Graf_ponderat g;
-    cout << g;
+    //cout << g;
     g.bfs_bellman_ford( 1, 4 );
     g.pondere_roy_floyd();
     return 0;

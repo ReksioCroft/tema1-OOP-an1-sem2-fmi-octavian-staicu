@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/reksio/CLionProjects/tema oop/main.cpp" "/home/reksio/CLionProjects/tema oop/cmake-build-debug/CMakeFiles/tema_oop.dir/main.cpp.o"
+  "/home/reksio/CLionProjects/tema1-OOP-an1-sem2-fmi-octavian-staicu/main.cpp" "/home/reksio/CLionProjects/tema1-OOP-an1-sem2-fmi-octavian-staicu/cmake-build-debug/CMakeFiles/tema_oop.dir/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
