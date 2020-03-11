@@ -8,6 +8,7 @@ class Graf_ponderat {
 private:
     vector< pair< int, int> > v[100];                             ///presupun ca am maxim 100 noduri intr-un graf
     void printare_bfs( int drum[], int nod1, int nod2 );         ///le retin ca lista de adiacenta; .first va contine nodul in care mergem, si .second ponderea muchiei
+    void dfs_conex( bool nod[], int poz );
 public:
     Graf_ponderat();  ///constructor initializare
 
@@ -28,6 +29,8 @@ public:
     void bfs_bellman_ford(int nod1, int nod2);
 
     void pondere_roy_floyd();
+
+    bool conex();
 };
 
 Graf_ponderat::Graf_ponderat() {///constructor initializare
@@ -133,11 +136,31 @@ void Graf_ponderat::pondere_roy_floyd() {
      }
 }
 
+void Graf_ponderat::dfs_conex(bool *nod, int poz) {
+    int i;
+    nod[poz] = true;
+    for ( i = 0; i < v[poz].size(); i++ )
+        if ( nod[v[poz][i].first] == false )
+            dfs_conex( nod, v[poz][i].first );
+}
+
+bool Graf_ponderat::conex() {
+    bool vizitat[100] = {false};
+    int i = 0;
+    while ( v[i].size() == 0 )
+        i++;
+    dfs_conex( vizitat, i );
+    for ( i = 0; i < 100; i++ )
+        if ( v[i].size() > 0 && vizitat[i] == false )
+            return  false;
+    return true;
+}
 
 int main() {
     Graf_ponderat g;
-    //cout << g;
-    g.bfs_bellman_ford( 1, 4 );
+    cout << g;
+    g.bfs_bellman_ford( 1, 2 );
     g.pondere_roy_floyd();
+    cout <<  ( ( g.conex() == true ) ? "Graful este conex\n" : "Graful nu este conex\n" );
     return 0;
 }
