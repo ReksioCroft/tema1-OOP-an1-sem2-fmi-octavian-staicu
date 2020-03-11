@@ -24,7 +24,7 @@ public:
 
     ~Graf_ponderat();    ///destructor
 
-    friend ostream &operator <<( ostream& afisare, Graf_ponderat &g );
+    friend ostream &operator <<( ostream& afisare, const Graf_ponderat &g );
 
     void bfs_bellman_ford(int nod1, int nod2);
 
@@ -57,7 +57,7 @@ Graf_ponderat::~Graf_ponderat() {///destructor
         v[i].clear();
 }
 
-ostream &operator <<( ostream& afisare, Graf_ponderat &g ) {
+ostream &operator <<( ostream& afisare, const Graf_ponderat &g ) {
     int i, j;
     for ( i = 0; i < 100; i++ )
         for ( j = 0; j < g.v[i].size(); j++ )
@@ -104,7 +104,7 @@ void Graf_ponderat::pondere_roy_floyd() {
     int i, maxi, j, k;
     maxi = 0;
     for ( i = 0; i < 100; i++ )
-        if ( v[i].size() > 0 )
+        if ( v[i].empty() == 0 )
             maxi = i;
     int matrix[maxi+1][maxi+1];
     for ( i = 0; i <= maxi; i++ )
@@ -147,11 +147,11 @@ void Graf_ponderat::dfs_conex(bool *nod, int poz) {
 bool Graf_ponderat::conex() {
     bool vizitat[100] = {false};
     int i = 0;
-    while ( v[i].size() == 0 )
+    while ( v[i].empty() )
         i++;
     dfs_conex( vizitat, i );
     for ( i = 0; i < 100; i++ )
-        if ( v[i].size() > 0 && vizitat[i] == false )
+        if ( v[i].empty() == 0 && vizitat[i] == false )
             return  false;
     return true;
 }
