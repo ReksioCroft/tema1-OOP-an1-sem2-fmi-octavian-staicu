@@ -98,9 +98,13 @@ void Graf_ponderat::bfs_bellman_ford(int nod, int nod2) {
         }
         bellman.pop();
     }
-    cout << "Drumul de pondere minima intre cele doua noduri este: ";
-    printare_bfs( drum, nod, nod2 );
-    cout << "\n";
+    if ( cost[nod2] != INF ) {
+        cout << "Drumul de pondere minima intre cele doua noduri este: ";
+        printare_bfs(drum, nod, nod2);
+        cout << "\n";
+    }
+    else
+        cout << "Nu se poate ajunge din nodul " << nod << " in nodul " << nod2 << "\n";
 }
 
 void Graf_ponderat::printare_bfs( int drum[], int nod1, int nod2 ) {
@@ -203,12 +207,12 @@ int main() {
     try {
         Graf_ponderat g;
         cout << g;
-        g.bfs_bellman_ford(1, 2);
+        g.bfs_bellman_ford(1, 4);
         g.pondere_roy_floyd();
         cout << ((g.conex() == true) ? "Graful este conex\n" : "Graful nu este conex\n");
         Graf_ponderat g2;
         cout << g * g2;
-        Graf_ponderat g3;       ///TODO
+        Graf_ponderat g3;
         cout << g * g2 * g;
     }
     catch (const bad_function_call &e){
