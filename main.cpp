@@ -166,8 +166,11 @@ void Graf_ponderat::dfs_conex(bool *nod, int poz) {
 }
 
 bool Graf_ponderat::conex() {
-    bool vizitat[maxNod] = {false};
-    int i = 0;
+    bool vizitat[maxNod];
+    int i;
+    for ( i = 0; i < maxNod; i++ )
+        vizitat[i] = false;
+    i = 0;
     while ( v[i].empty() )
         i++;
     dfs_conex( vizitat, i );
@@ -223,7 +226,7 @@ int main() {
         Graf_ponderat g3;
         cout << g * g2 * g;
     }
-    catch (const bad_function_call &e){
+    catch (const bad_function_call &e) {
         cout << "\"Programul a fost gandit sa dea crash in acest caz!\"\n";
     }
     return 0;
