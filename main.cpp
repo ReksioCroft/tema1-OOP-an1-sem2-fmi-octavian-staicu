@@ -10,10 +10,10 @@ const int INF = INT_MAX;
 using namespace std;
 class Graf_ponderat {
 private:
-    static const int maxNod = 100;
-    vector< pair< int, int> > v[maxNod];                             ///presupun ca am maxim maxNod noduri intr-un graf
+    static const unsigned int maxNod = 100;
+    vector< pair< unsigned, int> > v[maxNod];                             ///presupun ca am maxim maxNod noduri intr-un graf
     void printare_bfs( int drum[], int nod1, int nod2 );         ///le retin ca lista de adiacenta; .first va contine nodul in care mergem, si .second ponderea muchiei
-    void dfs_conex( bool nod[], int poz );
+    void dfs_conex( bool nod[], unsigned poz );
 public:
     explicit Graf_ponderat( string );  ///constructor initializare
 
@@ -34,7 +34,8 @@ public:
 };
 
 Graf_ponderat::Graf_ponderat( string in = "." ) {///constructor initializare
-    int nr_noduri, nod1, nod2, pondere, i;
+    int nod1, nod2, pondere;
+    unsigned i, nr_noduri;
     if ( in == "." ) {
         cout << "Introduceti numele unui fisier sau caracterul '.' pentru a citi de la tastatura\n";
         cin >> in;
@@ -63,19 +64,20 @@ Graf_ponderat::Graf_ponderat( string in = "." ) {///constructor initializare
 }
 
 Graf_ponderat::Graf_ponderat( const Graf_ponderat &g ) {///constructor copiere
-    int i, j;
+    unsigned i, j;
     for ( i = 0; i < maxNod; i++ )
         for ( j = 0; j < g.v[i].size(); j++ )
             v[i].push_back( g.v[i][j] );
 }
 
 Graf_ponderat::~Graf_ponderat() {///destructor
-    for( int i = 0; i < maxNod; i++ )
+    unsigned i;
+    for( i = 0; i < maxNod; i++ )
         v[i].clear();
 }
 
 ostream &operator <<( ostream& output, const Graf_ponderat &g ) {
-    int i, j;
+    unsigned i, j;
     for ( i = 0; i < Graf_ponderat::maxNod; i++ )
         for ( j = 0; j < g.v[i].size(); j++ )
             if ( i < g.v[i][j].first ) ///fiind graf neorientat, voi afisa o singura data muchiile
@@ -84,7 +86,8 @@ ostream &operator <<( ostream& output, const Graf_ponderat &g ) {
 }
 
 void Graf_ponderat::bfs_bellman_ford(int nod, int nod2) {
-    int nod1 = nod, i, drum[maxNod], cost[maxNod];
+    int nod1 = nod, drum[maxNod], cost[maxNod];
+    unsigned i;
     queue < int > bellman;
     for ( i = 0; i < maxNod; i++ ) {
         drum[i] = cost[i] = INF;
@@ -122,7 +125,7 @@ void Graf_ponderat::printare_bfs( int drum[], int nod1, int nod2 ) {
 }
 
 void Graf_ponderat::pondere_roy_floyd() {
-    int i, maxi, j, k;
+    unsigned i, maxi, j, k;
     maxi = 0;
     for ( i = 0; i < maxNod; i++ )
         if ( v[i].empty() == 0 )
@@ -146,19 +149,19 @@ void Graf_ponderat::pondere_roy_floyd() {
             for ( j = 0; j <= maxi; j++ )
                 if ( (long long) 0LL + matrix[i][k] + matrix[k][j] < matrix[i][j] )
                     matrix[i][j] = matrix[i][k] + matrix[k][j];
-     for ( i = 0; i <= maxi; i++ ) {
-         for (j = 0; j <= maxi; j++) {
-             if ( matrix[i][j] != INF )
+    for ( i = 0; i <= maxi; i++ ) {
+        for (j = 0; j <= maxi; j++) {
+            if ( matrix[i][j] != INF )
                 cout << matrix[i][j] << " ";
-             else
-                 cout << "NIL ";
-         }
-         cout << "\n";
-     }
+            else
+                cout << "NIL ";
+        }
+        cout << "\n";
+    }
 }
 
-void Graf_ponderat::dfs_conex(bool *nod, int poz) {
-    int i;
+void Graf_ponderat::dfs_conex(bool *nod, unsigned poz) {
+    unsigned i;
     nod[poz] = true;
     for ( i = 0; i < v[poz].size(); i++ )
         if ( nod[v[poz][i].first] == false )
@@ -167,7 +170,7 @@ void Graf_ponderat::dfs_conex(bool *nod, int poz) {
 
 bool Graf_ponderat::conex() {
     bool vizitat[maxNod];
-    int i;
+    unsigned i;
     for ( i = 0; i < maxNod; i++ )
         vizitat[i] = false;
     i = 0;
@@ -181,12 +184,12 @@ bool Graf_ponderat::conex() {
 }
 
 Graf_ponderat& Graf_ponderat::operator *(const Graf_ponderat &g2) {
-    int i, j, k;
+    unsigned i, j, k;
     bool ok = true, gasit;
     try {
         for ( i = 0; i < maxNod; i++ )
             if ( this->v[i].empty() != g2.v[i].empty() )
-               throw invalid_argument( "Grafurile nu au aceeasi multime de muchii. ");
+                throw invalid_argument( "Grafurile nu au aceeasi multime de muchii. ");
     }
     catch ( const invalid_argument &e ){
         cout << e.what();
@@ -216,15 +219,15 @@ Graf_ponderat& Graf_ponderat::operator *(const Graf_ponderat &g2) {
 
 int main() {
     try {
-        Graf_ponderat g( "date.in");
+        Graf_ponderat g;
         cout << g;
         g.bfs_bellman_ford(1, 4);
         g.pondere_roy_floyd();
         cout << ((g.conex() == true) ? "Graful este conex\n" : "Graful nu este conex\n");
-        Graf_ponderat g2;
+        Graf_ponderat g2( g );
         cout << g * g2;
-        Graf_ponderat g3;
-        cout << g * g2 * g;
+        Graf_ponderat g3( "date.in" );
+        cout << g3 * g2 * g;
     }
     catch (const bad_function_call &e) {
         cout << "\"Programul a fost gandit sa dea crash in acest caz!\"\n";
