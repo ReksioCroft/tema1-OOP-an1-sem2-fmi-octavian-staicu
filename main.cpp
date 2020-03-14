@@ -2,14 +2,12 @@
 #include <vector>
 #include <queue>
 #include <functional>
+#include <climits>
+#include <fstream>
+#include <cstring>
 
-const int INF = (1<<29);
+const int INF = INT_MAX;
 using namespace std;
-
-int mini( int a, int b ) {
-    return ( a < b ) ? a : b;
-}
-
 class Graf_ponderat {
 private:
     static const int maxNod = 100;
@@ -17,21 +15,14 @@ private:
     void printare_bfs( int drum[], int nod1, int nod2 );         ///le retin ca lista de adiacenta; .first va contine nodul in care mergem, si .second ponderea muchiei
     void dfs_conex( bool nod[], int poz );
 public:
-    Graf_ponderat();  ///constructor initializare
+    explicit Graf_ponderat( string );  ///constructor initializare
 
-
-    int get_v_size( int x ) const{
-        return v[x].size();
-    }
-    pair<int,int> get_nod( int x, int y ) const {
-        return v[x][y];
-    }
     Graf_ponderat( const Graf_ponderat &g );  ///constructor copiere
 
 
     ~Graf_ponderat();    ///destructor
 
-    friend ostream &operator <<( ostream& afisare, const Graf_ponderat &g );
+    friend ostream &operator <<( ostream& output, const Graf_ponderat &g );
 
     void bfs_bellman_ford(int nod1, int nod2);
 
@@ -42,23 +33,40 @@ public:
     Graf_ponderat &operator *(const Graf_ponderat & g2 );
 };
 
-Graf_ponderat::Graf_ponderat() {///constructor initializare
-    int nod1, nod2, pondere;
-    cout<<"introduce o muchie intre doua noduri si ponderea ei, sub forma \"nod1 nod2 pondere\"\n";
-    cout<<"pt a termina de introdus graful, introduceti -1 -1 -1\n";
-    cin >> nod1 >> nod2 >> pondere;
-    while ( nod1 > -1 ) {
-        v[nod1].push_back( make_pair(nod2, pondere ) );
-        v[nod2].push_back( make_pair(nod1, pondere ) );
+Graf_ponderat::Graf_ponderat( string in = "." ) {///constructor initializare
+    int nr_noduri, nod1, nod2, pondere, i;
+    if ( in == "." ) {
+        cout << "Introduceti numele unui fisier sau caracterul '.' pentru a citi de la tastatura\n";
+        cin >> in;
+    }
+    if ( in == "." ) {
+
+        cout << "introduce o muchie intre doua noduri si ponderea ei, sub forma \"nod1 nod2 pondere\"\n";
+        cout << "pt a termina de introdus graful, introduceti -1 -1 -1\n";
         cin >> nod1 >> nod2 >> pondere;
+        while (nod1 > -1) {
+            v[nod1].push_back(make_pair(nod2, pondere));
+            v[nod2].push_back(make_pair(nod1, pondere));
+            cin >> nod1 >> nod2 >> pondere;
+        }
+    }
+    else{
+        ifstream fin( in.c_str() );
+        fin >> nr_noduri;
+        for ( i = 0; i < nr_noduri; i++ ) {
+            fin >> nod1 >> nod2 >> pondere;
+            v[nod1].push_back(make_pair(nod2, pondere));
+            v[nod2].push_back(make_pair(nod1, pondere));
+        }
+        fin.close();
     }
 }
 
 Graf_ponderat::Graf_ponderat( const Graf_ponderat &g ) {///constructor copiere
     int i, j;
     for ( i = 0; i < maxNod; i++ )
-        for ( j = 0; j < g.get_v_size( i ); j++ )
-            v[i].push_back( g.get_nod( i, j ) );
+        for ( j = 0; j < g.v[i].size(); j++ )
+            v[i].push_back( g.v[i][j] );
 }
 
 Graf_ponderat::~Graf_ponderat() {///destructor
@@ -66,13 +74,13 @@ Graf_ponderat::~Graf_ponderat() {///destructor
         v[i].clear();
 }
 
-ostream &operator <<( ostream& afisare, const Graf_ponderat &g ) {
+ostream &operator <<( ostream& output, const Graf_ponderat &g ) {
     int i, j;
     for ( i = 0; i < Graf_ponderat::maxNod; i++ )
         for ( j = 0; j < g.v[i].size(); j++ )
             if ( i < g.v[i][j].first ) ///fiind graf neorientat, voi afisa o singura data muchiile
-                afisare<<"Exista drum de la nodul " << i << " la nodul " << g.v[i][j].first <<" cu ponderea " << g.v[i][j].second << "\n";
-    return afisare;
+                output<<"Exista drum de la nodul " << i << " la nodul " << g.v[i][j].first <<" cu ponderea " << g.v[i][j].second << "\n";
+    return output;
 }
 
 void Graf_ponderat::bfs_bellman_ford(int nod, int nod2) {
@@ -136,7 +144,7 @@ void Graf_ponderat::pondere_roy_floyd() {
     for ( k = 0; k <= maxi; k++  )
         for ( i = 0; i <= maxi; i++ )
             for ( j = 0; j <= maxi; j++ )
-                if ( matrix[i][k] + matrix[k][j] < matrix[i][j] )
+                if ( (long long) 0LL + matrix[i][k] + matrix[k][j] < matrix[i][j] )
                     matrix[i][j] = matrix[i][k] + matrix[k][j];
      for ( i = 0; i <= maxi; i++ ) {
          for (j = 0; j <= maxi; j++) {
@@ -175,7 +183,7 @@ Graf_ponderat& Graf_ponderat::operator *(const Graf_ponderat &g2) {
     try {
         for ( i = 0; i < maxNod; i++ )
             if ( this->v[i].empty() != g2.v[i].empty() )
-               __throw_invalid_argument( "Grafurile nu au aceeasi multime de muchii. ");
+               throw invalid_argument( "Grafurile nu au aceeasi multime de muchii. ");
     }
     catch ( const invalid_argument &e ){
         cout << e.what();
@@ -189,7 +197,7 @@ Graf_ponderat& Graf_ponderat::operator *(const Graf_ponderat &g2) {
                 for ( k = 0; k < g2.v[i].size() && gasit == false; k++ ) {
                     if ( v[i][j].first == g2.v[i][j].first ) {
                         gasit = true;
-                        v[i][j].second = mini( v[i][j].second, g2.v[i][j].second );
+                        v[i][j].second = min( v[i][j].second, g2.v[i][j].second );
                     }
                 }
                 if ( gasit == false ) {
@@ -200,12 +208,12 @@ Graf_ponderat& Graf_ponderat::operator *(const Graf_ponderat &g2) {
         return *this;
     }
     else
-        __throw_bad_function_call();
+        throw bad_function_call();
 }
 
 int main() {
     try {
-        Graf_ponderat g;
+        Graf_ponderat g( "date.in");
         cout << g;
         g.bfs_bellman_ford(1, 4);
         g.pondere_roy_floyd();
@@ -216,7 +224,7 @@ int main() {
         cout << g * g2 * g;
     }
     catch (const bad_function_call &e){
-        cout << "\"Alta-ntrebare?!\"\n";
+        cout << "\"Programul a fost gandit sa dea crash in acest caz!\"\n";
     }
     return 0;
 }
