@@ -1,3 +1,0 @@
-/home/reksio/CLionProjects/tema1-OOP-an1-sem2-fmi-octavian-staicu/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/reksio/CLionProjects/tema1-OOP-an1-sem2-fmi-octavian-staicu/cmake-build-debug/CMakeFiles/tema_oop.dir
-/home/reksio/CLionProjects/tema1-OOP-an1-sem2-fmi-octavian-staicu/cmake-build-debug/CMakeFiles/edit_cache.dir
