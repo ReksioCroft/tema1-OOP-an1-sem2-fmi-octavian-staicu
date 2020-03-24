@@ -5,9 +5,10 @@
 #include <climits>
 #include <fstream>
 #include <string>
+#include <algorithm>
+using namespace std;
 
 const int INF = INT_MAX;
-using namespace std;
 class Graf_ponderat {
 private:
     static const unsigned int maxNod = 100;
@@ -35,7 +36,7 @@ public:
 };
 
 void Graf_ponderat::adaugare_muchie( istream& input ) {
-    int nr_muchii, nod1, nod2, pondere, i;
+    int nr_muchii = 0, nod1, nod2, pondere, i;
     input >> nr_muchii;
     for ( i = 0; i < nr_muchii; i++ ) {
         input >> nod1 >> nod2 >> pondere;
@@ -56,17 +57,20 @@ Graf_ponderat::Graf_ponderat( string in = "." ) {///constructor initializare
         adaugare_muchie( cin );
     }
     else{
-        ifstream fin( in.c_str() );
+        ifstream fin( in );
         adaugare_muchie( fin );
         fin.close();
     }
 }
 
 Graf_ponderat::Graf_ponderat( const Graf_ponderat &g ) {///constructor copiere
-    unsigned i, j;
+    unsigned i;
     for ( i = 0; i < maxNod; i++ )
-        for ( j = 0; j < g.v[i].size(); j++ )
+        for ( unsigned j = 0; j < g.v[i].size(); j++ )
             v[i].push_back( g.v[i][j] );
+
+        ///TODO
+        ///copy( g.v[i].begin(), g.v[i].end(), v[i].begin() ); - nu merge?
 }
 
 Graf_ponderat::~Graf_ponderat() {///destructor
